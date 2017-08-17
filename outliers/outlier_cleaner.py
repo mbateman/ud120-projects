@@ -10,11 +10,17 @@ def outlierCleaner(predictions, ages, net_worths):
         Return a list of tuples named cleaned_data where 
         each tuple is of the form (age, net_worth, error).
     """
-    
+
     cleaned_data = []
 
     ### your code goes here
 
-    
-    return cleaned_data
+    # to calculate error as specified in the code comment
+    errors = abs(net_worths - predictions)
+    cleaned_data = zip(ages, net_worths, errors)
 
+    # the [0] isn't necessary in this case since errors is a 1-D array
+    cleaned_data = sorted(cleaned_data, key=lambda x: x[2], reverse=True)
+    limit = int(len(net_worths) * 0.1)
+
+    return cleaned_data[limit:]

@@ -9,8 +9,8 @@ from outlier_cleaner import outlierCleaner
 
 
 ### load up some practice data with outliers in it
-ages = pickle.load( open("practice_outliers_ages.pkl", "r") )
-net_worths = pickle.load( open("practice_outliers_net_worths.pkl", "r") )
+ages = pickle.load( open("practice_outliers_ages.pkl", "rb") )
+net_worths = pickle.load( open("practice_outliers_net_worths.pkl", "rb") )
 
 
 
@@ -25,16 +25,14 @@ ages_train, ages_test, net_worths_train, net_worths_test = train_test_split(ages
 
 ### fill in a regression here!  Name the regression object reg so that
 ### the plotting code below works, and you can see what your regression looks like
-
-
-
-
-
-
-
-
-
-
+from sklearn import linear_model
+import numpy as np
+reg = linear_model.LinearRegression()
+reg.fit(ages_train, net_worths_train)
+#reg.fit(ages_test, net_worths_test) ???
+print('Uncleaned Coefficients (Slope): ', reg.coef_)
+print('Uncleaned Test set score: %.3f' % reg.score(ages_test, net_worths_test))
+print('Uncleaned Train set score: %.3f' % reg.score(ages_train, net_worths_train))
 
 try:
     plt.plot(ages, reg.predict(ages), color="blue")
@@ -50,14 +48,8 @@ try:
     predictions = reg.predict(ages_train)
     cleaned_data = outlierCleaner( predictions, ages_train, net_worths_train )
 except NameError:
-    print "your regression object doesn't exist, or isn't name reg"
-    print "can't make predictions to use in identifying outliers"
-
-
-
-
-
-
+    print ("your regression object doesn't exist, or isn't name reg")
+    print ("can't make predictions to use in identifying outliers")
 
 ### only run this code if cleaned_data is returning data
 if len(cleaned_data) > 0:
@@ -70,15 +62,16 @@ if len(cleaned_data) > 0:
         reg.fit(ages, net_worths)
         plt.plot(ages, reg.predict(ages), color="blue")
     except NameError:
-        print "you don't seem to have regression imported/created,"
-        print "   or else your regression object isn't named reg"
-        print "   either way, only draw the scatter plot of the cleaned data"
+        print ("you don't seem to have regression imported/created,")
+        print ("   or else your regression object isn't named reg")
+        print ("   either way, only draw the scatter plot of the cleaned data")
     plt.scatter(ages, net_worths)
     plt.xlabel("ages")
     plt.ylabel("net worths")
     plt.show()
-
-
+    print ('Cleaned Coefficients (Slope): ', reg.coef_)
+    print('Cleaned Test set score: %.3f' % reg.score(ages_test, net_worths_test))
+    print('Cleaned Train set score: %.3f' % reg.score(ages_train, net_worths_train))
 else:
-    print "outlierCleaner() is returning an empty list, no refitting to be done"
+    print ("outlierCleaner() is returning an empty list, no refitting to be done")
 

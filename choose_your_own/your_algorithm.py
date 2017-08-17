@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
-from class_vis import prettyPicture
+### from class_vis import prettyPicture
 
 features_train, labels_train, features_test, labels_test = makeTerrainData()
 
@@ -30,15 +30,16 @@ plt.show()
 
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
+from sklearn.neighbors import NearestNeighbors
+from sklearn.metrics import accuracy_score
 
+clf = NearestNeighbors(2, 0.4)
+clf = clf.fit(features_train, labels_train)
+prediction = clf.predict(features_test)
+print ("score:", accuracy_score(prediction, labels_test))
+neighbors = clf.kneighbors([[0, 0, 1.3]], 2, return_distance=False)
 
-
-
-
-
-
-
-try:
-    prettyPicture(clf, features_test, labels_test)
-except NameError:
-    pass
+### try:
+    ### prettyPicture(clf, features_test, labels_test)
+### except NameError:
+###    pass

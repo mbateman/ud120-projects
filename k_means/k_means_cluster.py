@@ -4,18 +4,15 @@
     Skeleton code for k-means clustering mini-project.
 """
 
-
-
-
 import pickle
 import numpy
 import matplotlib.pyplot as plt
 import sys
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+
 sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
-
-
-
 
 def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature 1", f2_name="feature 2"):
     """ some plotting code designed to help you visualize your clusters """
@@ -36,23 +33,31 @@ def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature
     plt.savefig(name)
     plt.show()
 
-
-
 ### load in the dict of dicts containing all the data on each person in the dataset
 data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r") )
 ### there's an outlier--remove it! 
 data_dict.pop("TOTAL", 0)
 
-
-### the input features we want to use 
+### the input features we want to use
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
+feature_3 = "total_payments"
 poi  = "poi"
 features_list = [poi, feature_1, feature_2]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
 
+# Scale the data
+scaler = MinMaxScaler()
+data_min_max = scaler.fit_transform(finance_features)
+
+# Then use the transformer on new test data
+# Use scaler.transform instead of scaler.fit_transform
+test_data = numpy.array([[200000., 1000000.]])
+data_test = scaler.transform(test_data)
+
+print data_test
 
 ### in the "clustering with 3 features" part of the mini-project,
 ### you'll want to change this line to 
@@ -64,9 +69,9 @@ plt.show()
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
-
-
-
+# data = scaler.transform(data)
+random_state = 170
+pred = KMeans(n_clusters=2, random_state=random_state).fit_predict(data)
 
 ### rename the "name" parameter when you change the number of features
 ### so that the figure gets saved to a different file
